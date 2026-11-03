@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1793349537994,
+    "productId": 9,
+    "change": 9,
+    "note": "",
+    "quantityAfter": 10,
+    "createdAt": "2026-10-30T08:38:57.994Z"
+  },
+  {
+    "id": 1793345566017,
+    "productId": 9,
+    "change": -4229,
+    "note": "",
+    "quantityAfter": 1,
+    "createdAt": "2026-10-30T07:32:46.017Z"
+  },
+  {
+    "id": 1793345559834,
+    "productId": 9,
+    "change": -222,
+    "note": "",
+    "quantityAfter": 4230,
+    "createdAt": "2026-10-30T07:32:39.834Z"
+  },
+  {
+    "id": 1793345554900,
+    "productId": 9,
+    "change": 2,
+    "note": "",
+    "quantityAfter": 4452,
+    "createdAt": "2026-10-30T07:32:34.900Z"
+  },
+  {
+    "id": 1793345551427,
+    "productId": 9,
+    "change": 2,
+    "note": "",
+    "quantityAfter": 4450,
+    "createdAt": "2026-10-30T07:32:31.427Z"
+  },
+  {
+    "id": 1793345546858,
+    "productId": 9,
+    "change": 4444,
+    "note": "",
+    "quantityAfter": 4448,
+    "createdAt": "2026-10-30T07:32:26.858Z"
+  }
+]

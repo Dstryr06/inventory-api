@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Inventory System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <!--  NAVBAR  -->
+    <nav class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <span class="navbar-brand">Inventory System API</span>
+            <div class="d-flex gap-2">
+                <a class="btn btn-dark" href="categories.html">Categories</a>
+                <button class="btn btn-dark" onclick="openProduct()">Add Product</button>
+                <button class="btn btn-dark" onclick="syncProducts()">Sync Products</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+
+        <div class="mb-4">
+            <h2 class="h3 fw-semibold mb-1">Inventory Overview</h2>
+            <p class="text-muted mb-0">Track products, stock levels and categories in one place.</p>
+        </div>
+
+        <div id="message"></div>
+
+        <!--  SUMMARY CARDS  -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md">
+                <div class="card h-100 border-0 border-start border-4 border-primary shadow-sm">
+                    <div class="card-body">
+                        <small class="text-muted">Products</small>
+                        <h3 id="products" class="fw-semibold mb-0">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md">
+                <div class="card h-100 border-0 border-start border-4 border-success shadow-sm">
+                    <div class="card-body">
+                        <small class="text-muted">Total Units</small>
+                        <h3 id="units" class="fw-semibold mb-0">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md">
+                <div class="card h-100 border-0 border-start border-4 border-info shadow-sm">
+                    <div class="card-body">
+                        <small class="text-muted">Inventory Value</small>
+                        <h3 id="value" class="fw-semibold mb-0">₱0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md">
+                <div class="card h-100 border-0 border-start border-4 border-warning shadow-sm">
+                    <div class="card-body">
+                        <small class="text-muted">Low Stock</small>
+                        <h3 id="low" class="fw-semibold mb-0">0</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--  PRODUCTS TABLE  -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+
+                <div class="d-flex gap-2 justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Products</h4>
+                    <div class="d-flex gap-2">
+                        <select id="filterCat" class="form-select w-auto" onchange="loadInventory()">
+                            <option value="">All categories</option>
+                        </select>
+                        <input id="search" class="form-control w-auto" placeholder="Search products" oninput="loadInventory()">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rows"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!--  ADJUST STOCK POPUP   -->
+    <div class="modal fade" id="stockModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="stockForm" class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Adjust Stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="productId">
+                    <p id="productName" class="fw-bold"></p>
+
+                    <label class="form-label">Change</label>
+                    <input id="change" type="number" class="form-control mb-3" placeholder="Example: 5 or -2" required>
+
+                    <label class="form-label">Note</label>
+                    <input id="note" class="form-control" placeholder="Restock, sale, damaged item...">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary">Save Adjustment</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <!--  ADD / EDIT PRODUCT POPUP  -->
+    <div class="modal fade" id="productModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="productForm" class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalTitle">Add Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="productError"></div>
+                    <input type="hidden" id="editId">
+                    <p id="editNote" class="text-muted small d-none">Products from the online catalog only allow editing the title and description.</p>
+
+                    <label class="form-label">Title</label>
+                    <input id="pTitle" class="form-control mb-3" maxlength="100" required>
+
+                    <label class="form-label">Description</label>
+                    <textarea id="pDescription" class="form-control mb-3" rows="2" maxlength="1000"></textarea>
+
+                    <label class="form-label">Category</label>
+                    <select id="pCat" class="form-select mb-3" required></select>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col">
+                            <label class="form-label">Price</label>
+                            <input id="pPrice" type="number" min="0" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Brand</label>
+                            <input id="pBrand" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- only shown when adding; stock for existing products is changed with Adjust -->
+                    <div class="row g-3" id="stockFields">
+                        <div class="col">
+                            <label class="form-label">Quantity</label>
+                            <input id="pQty" type="number" min="0" step="1" class="form-control" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary">Save</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // Formats numbers as Philippine pesos (₱1,234.00)
+        const money = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+
+        let cache = [];
+
+
+        function esc(text) {
+            return String(text ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+
+        function alertBox(text, type = 'danger') {
+            message.innerHTML = `<div class="alert alert-${type}">${esc(text)}</div>`;
+        }
+
+
+
+        async function api(url, options = {}) {
+            const r = await fetch(url, options);
+            const d = await r.json();
+            if (!r.ok) throw new Error(d.errors?.join(' ') || d.message);
+            return d;
+        }
+
+
+        async function syncProducts() {
+            try {
+                await api('/api/inventory/sync', { method: 'POST' });
+                alertBox('Products synchronized.', 'success');
+                await refresh();
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+        async function loadInventory() {
+            try {
+                const q = search.value.trim();
+                const r = await api(`/api/inventory${q ? `?search=${encodeURIComponent(q)}` : ''}`);
+                cache = r.data;
+
+                const shown = filterCat.value ? cache.filter(p => String(p.catId) === filterCat.value) : cache;
+                if (shown.length === 0) {
+                    rows.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">No products found.</td></tr>`;
+                    return;
+                }
+
+                rows.innerHTML = shown.map(p => {
+                    const pic = p.thumbnail
+                        ? `<img src="${esc(p.thumbnail)}" width="48" height="48" class="rounded object-fit-cover" onerror="this.style.visibility='hidden'">`
+                        : `<div class="rounded bg-secondary-subtle" style="width:48px;height:48px"></div>`;
+                    return `
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    ${pic}
+                                    <div>
+                                        <strong>${esc(p.title)}</strong><br>
+                                        <small>${esc(p.brand)}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${esc(p.category)}</td>
+                            <td>${money.format(p.price)}</td>
+                            <td>${p.quantity}</td>
+                            <td><span class="badge rounded-pill ${p.status === 'In Stock' ? 'bg-success' : p.status === 'Low Stock' ? 'bg-warning text-dark' : 'bg-danger'}">${p.status}</span></td>
+                            <td class="text-nowrap">
+                                <button class="btn btn-sm btn-primary" onclick="openStock(${p.id})">Adjust</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="openProduct(${p.id})">Edit</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${p.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+        async function loadSummary() {
+            try {
+                const d = (await api('/api/reports/summary')).data;
+                products.textContent = d.products;
+                units.textContent = d.totalUnits;
+                value.textContent = money.format(d.inventoryValue);
+                low.textContent = d.lowStock + d.outOfStock;
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+       
+        function openStock(id) {
+            const p = cache.find(x => x.id === id);
+            productId.value = id;
+            productName.textContent = p?.title || `Product ${id}`;
+            change.value = '';
+            note.value = '';
+            bootstrap.Modal.getOrCreateInstance(stockModal).show();
+        }
+
+
+        stockForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            try {
+                await api(`/api/inventory/${productId.value}/adjust`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ change: Number(change.value), note: note.value })
+                });
+                bootstrap.Modal.getInstance(stockModal).hide();
+                alertBox('Stock adjusted successfully.', 'success');
+                await refresh();
+            } catch (err) {
+                alertBox(err.message);
+            }
+        });
+
+
+        
+        async function loadCategoryOptions(selected) {
+            const r = await api('/api/categories');
+            pCat.innerHTML = r.data.map(c => `<option value="${c.catId}">${esc(c.catName)}</option>`).join('');
+            pCat.value = selected ?? '';
+        }
+
+
+        
+        async function openProduct(id) {
+            try {
+                const p = id ? cache.find(x => x.id === id) : null;
+                const onlineProduct = p && !p.custom;   
+                await loadCategoryOptions(p?.catId);
+                productModalTitle.textContent = p ? 'Edit Product' : 'Add Product';
+                productError.innerHTML = '';
+                editId.value = p ? p.id : '';
+                pTitle.value = p?.title || '';
+                pDescription.value = p?.description || '';
+                pPrice.value = p?.price ?? '';
+                pBrand.value = p?.brand || '';
+                pQty.value = '';
+                for (const el of [pCat, pPrice, pBrand]) el.disabled = onlineProduct;
+                editNote.classList.toggle('d-none', !onlineProduct);
+                stockFields.classList.toggle('d-none', !!p);
+                bootstrap.Modal.getOrCreateInstance(productModal).show();
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+        
+        productForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            try {
+                const editing = editId.value !== '';
+                const body = { title: pTitle.value, description: pDescription.value };
+                if (!pCat.disabled) Object.assign(body, { catId: pCat.value, price: pPrice.value, brand: pBrand.value });
+                if (!editing) Object.assign(body, { quantity: pQty.value });
+
+                const r = await api(editing ? `/api/inventory/${editId.value}/update` : '/api/inventory/additem/', {
+                    method: editing ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                bootstrap.Modal.getInstance(productModal).hide();
+                alertBox(r.message, 'success');
+                await refresh();
+            } catch (err) {
+                
+                productError.innerHTML = `<div class="alert alert-danger">${esc(err.message)}</div>`;
+            }
+        });
+
+
+        
+        async function deleteProduct(id) {
+            const p = cache.find(x => x.id === id);
+            if (!confirm(`Delete "${p?.title || 'this product'}"?`)) return;
+            try {
+                const r = await api(`/api/inventory/${id}`, { method: 'DELETE' });
+                alertBox(r.message, 'success');
+                await refresh();
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+        
+        async function loadFilterOptions() {
+            try {
+                const keep = filterCat.value;
+                const r = await api('/api/categories');
+                filterCat.innerHTML = '<option value="">All categories</option>'
+                    + r.data.map(c => `<option value="${c.catId}">${esc(c.catName)}</option>`).join('');
+                filterCat.value = keep;
+                if (filterCat.selectedIndex === -1) filterCat.value = '';
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+        
+        async function refresh() {
+            await Promise.all([loadInventory(), loadSummary(), loadFilterOptions()]);
+        }
+
+        
+        refresh();
+
+    </script>
+</body>
+
+</html>

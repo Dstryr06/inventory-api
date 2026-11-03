@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Categories</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <span class="navbar-brand">Inventory System API</span>
+            <a class="btn btn-dark" href="/">Products</a>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+
+        <div class="mb-4">
+            <h2 class="h3 fw-semibold mb-1">Categories</h2>
+            <p class="text-muted mb-0">Add, rename or remove the categories used by your products.</p>
+        </div>
+
+        <!-- Messages (success / error) show up here -->
+        <div id="message"></div>
+
+        <!-- ===== ADD / EDIT CATEGORY FORM ===== -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h4 id="formTitle">Add Category</h4>
+
+                <form id="catForm" class="row g-3">
+                    <input type="hidden" id="catId">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Name</label>
+                        <input id="catName" class="form-control" maxlength="50" required>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="form-label">Description</label>
+                        <input id="catDescription" class="form-control" maxlength="200">
+                    </div>
+
+                    <div class="col-md-3 d-flex align-items-end gap-2">
+                        <button class="btn btn-primary" id="saveBtn">Add</button>
+                        <button type="button" class="btn btn-secondary d-none" id="cancelBtn" onclick="resetForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ===== CATEGORY TABLE ===== -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h4>Categories</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Products</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <!-- The rows are filled in by loadCategories() in the script below -->
+                        <tbody id="rows"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- ===== SCRIPT ===== -->
+    <script>
+
+        // The category list from the last load, so editCategory() can find a category by id
+        let cache = [];
+
+
+        // Makes text safe to put inside HTML (see index.html)
+        function esc(text) {
+            return String(text ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+
+        // Shows a message at the top of the page: red by default, or 'success' for green
+        function alertBox(text, type = 'danger') {
+            message.innerHTML = `<div class="alert alert-${type}">${esc(text)}</div>`;
+        }
+
+
+        // Helper for talking to app.js (same as in index.html)
+        async function api(url, options = {}) {
+            const r = await fetch(url, options);
+            const d = await r.json();
+            if (!r.ok) throw new Error(d.errors?.join(' ') || d.message);
+            return d;
+        }
+
+
+        // Loads the categories (GET /api/categories) and draws the table rows
+        async function loadCategories() {
+            try {
+                cache = (await api('/api/categories')).data;
+
+                // how many products use each category (from GET /api/inventory); shows "-" if that can't be loaded
+                const counts = {};
+                try {
+                    for (const p of (await api('/api/inventory')).data) counts[p.catId] = (counts[p.catId] || 0) + 1;
+                } catch {
+                    counts.failed = true;
+                }
+
+                rows.innerHTML = cache.map(c => `
+                    <tr>
+                        <td>${c.catId}</td>
+                        <td>${esc(c.catName)}</td>
+                        <td>${esc(c.catDescription)}</td>
+                        <td>${counts.failed ? '-' : `<span class="badge rounded-pill text-bg-secondary">${counts[c.catId] || 0}</span>`}</td>
+                        <td class="text-nowrap">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="editCategory(${c.catId})">Edit</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteCategory(${c.catId})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+        // Puts the form back to "Add Category" mode
+        function resetForm() {
+            catForm.reset();
+            catId.value = '';
+            formTitle.textContent = 'Add Category';
+            saveBtn.textContent = 'Add';
+            cancelBtn.classList.add('d-none');
+        }
+
+
+        // "Edit" button on a row: copies that category into the form
+        function editCategory(id) {
+            const c = cache.find(x => x.catId === id);
+            catId.value = c.catId;
+            catName.value = c.catName;
+            catDescription.value = c.catDescription || '';
+            formTitle.textContent = 'Edit Category';
+            saveBtn.textContent = 'Save Changes';
+            cancelBtn.classList.remove('d-none');
+            catName.focus();
+        }
+
+
+        // Form button: POST /api/categories when adding, PUT /api/categories/:id when editing
+        catForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            try {
+                const editing = catId.value !== '';
+                const r = await api(editing ? `/api/categories/${catId.value}` : '/api/categories', {
+                    method: editing ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ catName: catName.value, catDescription: catDescription.value })
+                });
+                alertBox(r.message, 'success');
+                resetForm();
+                await loadCategories();
+            } catch (err) {
+                alertBox(err.message);
+            }
+        });
+
+
+        // "Delete" button on a row: DELETE /api/categories/:id
+        // (the server refuses with an error message if products still use the category)
+        async function deleteCategory(id) {
+            const c = cache.find(x => x.catId === id);
+            if (!confirm(`Delete the category "${c?.catName}"?`)) return;
+            try {
+                const r = await api(`/api/categories/${id}`, { method: 'DELETE' });
+                alertBox(r.message, 'success');
+                await loadCategories();
+            } catch (e) {
+                alertBox(e.message);
+            }
+        }
+
+
+        // Runs once when the page opens
+        loadCategories();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+[
+  {
+    "productId": 1,
+    "quantity": 99,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-30T13:36:33.182Z",
+    "title": "Essence_Mascara_Lash_Princess",
+    "description": "The Essence Mascara Lash Princess is a popular mascara."
+  },
+  {
+    "productId": 2,
+    "quantity": 34,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 3,
+    "quantity": 89,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 4,
+    "quantity": 91,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 5,
+    "quantity": 79,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 6,
+    "quantity": 29,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 7,
+    "quantity": 58,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 8,
+    "quantity": 98,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 9,
+    "quantity": 10,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-30T08:38:57.992Z"
+  },
+  {
+    "productId": 10,
+    "quantity": 91,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 11,
+    "quantity": 88,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 12,
+    "quantity": 60,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 13,
+    "quantity": 64,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 14,
+    "quantity": 26,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 15,
+    "quantity": 7,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.650Z"
+  },
+  {
+    "productId": 16,
+    "quantity": 8,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 17,
+    "quantity": 86,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 18,
+    "quantity": 46,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 19,
+    "quantity": 97,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 20,
+    "quantity": 10,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 21,
+    "quantity": 84,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 22,
+    "quantity": 71,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 23,
+    "quantity": 9,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 24,
+    "quantity": 74,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 25,
+    "quantity": 33,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 26,
+    "quantity": 3,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 27,
+    "quantity": 34,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 28,
+    "quantity": 27,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 29,
+    "quantity": 50,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 30,
+    "quantity": 99,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-20T09:31:12.651Z"
+  },
+  {
+    "productId": 1001,
+    "custom": true,
+    "title": "Phlash Speed 5",
+    "description": "The smoothes mouse pad available in the world.",
+    "catId": 6,
+    "price": 3000,
+    "brand": "Phalsh",
+    "sku": "GAM-001",
+    "thumbnail": "",
+    "quantity": 20,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-30T13:39:58.797Z"
+  },
+  {
+    "productId": 1003,
+    "custom": true,
+    "title": "Yellow Pad Paper",
+    "description": "For school, essential",
+    "catId": 7,
+    "price": 20,
+    "brand": "Papel na Dilaw",
+    "thumbnail": "",
+    "quantity": 50,
+    "reorderLevel": 10,
+    "updatedAt": "2026-10-30T13:47:02.291Z"
+  }
+]

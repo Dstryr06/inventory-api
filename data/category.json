@@ -1,0 +1,37 @@
+[
+  {
+    "catId": 1,
+    "catName": "Beauty",
+    "catDescription": "Beauty Products"
+  },
+  {
+    "catId": 2,
+    "catName": "Fragrance",
+    "catDescription": "Fragrance Products"
+  },
+  {
+    "catId": 3,
+    "catName": "Furniture",
+    "catDescription": "Furniture Products"
+  },
+  {
+    "catId": 4,
+    "catName": "Groceries",
+    "catDescription": "Groceries Products"
+  },
+  {
+    "catId": 5,
+    "catName": "Gaming",
+    "catDescription": "Gaming Products"
+  },
+  {
+    "catId": 6,
+    "catName": "Peripherals",
+    "catDescription": "Peripheral Products"
+  },
+  {
+    "catId": 7,
+    "catName": "School Material",
+    "catDescription": "School Material Products"
+  }
+]
